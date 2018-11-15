@@ -11,13 +11,13 @@ def insert(node, string):
     while len(string) >= 0:
         head = string[0]
 
-        if head < node.char:
-            node.left = Node(head)
-            node = node.left
-        elif head > node.char:
-            node.right = Node(head)
-        else:
-            if len(tail) == 0
+        # if head < node.char:
+        #     node.left = Node(head)
+        #     node = node.left
+        # elif head > node.char:
+        #     node.right = Node(head)
+        # else:
+        #     if len(tail) == 0
 
 
     if len(string) == 0:
