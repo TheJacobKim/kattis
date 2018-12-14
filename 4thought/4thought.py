@@ -1,36 +1,29 @@
 #!/bin/python3
-
-import operator
-
-
-def thought(val):
-    ops = {0: operator.add,
-           1: operator.sub,
-           2: operator.mul,
-           3: operator.truediv}
-
-    opsArr = ["+", "-", "*", "/"]
-
-    for i in range(0, 4):
-        op1 = ops[i]
-        for j in range(0, 4):
-            op2 = ops[j]
-            for k in range(0, 4):
-                op3 = ops[k]
-                try:
-                    ans = op1(op2(op3(4, 4), 4), 4)
-                except ZeroDivisionError:
-                    continue
-                if ans == val:
-                    print("4 " + opsArr[i] + " 4 " + opsArr[j] + " 4 " + opsArr[k] + " 4 = " + str(val))
-                    return
-    print("no solution")
+from itertools import combinations_with_replacement
 
 if __name__ == '__main__':
+    # Build combinations
+    lst = [" + 4", " - 4", " * 4", " / 4"]
+    comb = combinations_with_replacement(lst, 3)
+
+    ans = []
+    for item in comb:
+        ans.append("4" + ''.join(list(item)))
+
+    # Input
     ar = []
     num = int(input())
     for i in range(num):
         ar.append(int(input()))
 
+    # Find solution
     for val in ar:
-        thought(val)
+        for item in ans:
+            sol = False
+            if eval(item) == val:
+                sol = True
+                print(item + " = " + str(val))
+                break
+
+        if not sol:
+            print("no solution")
