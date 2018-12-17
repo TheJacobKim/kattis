@@ -4,3 +4,5 @@ if __name__ == '__main__':
         currency = list(input().split())
         R = int(input())
         for i in range(R):
+            i
+

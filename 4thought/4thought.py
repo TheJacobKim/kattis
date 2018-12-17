@@ -1,29 +1,21 @@
 #!/bin/python3
-from itertools import combinations_with_replacement
+from itertools import product
 
 if __name__ == '__main__':
-    # Build combinations
-    lst = [" + 4", " - 4", " * 4", " / 4"]
-    comb = combinations_with_replacement(lst, 3)
+    # Build product
+    lst = [" * 4", " // 4", " + 4", " - 4"]
+    comb = product(lst, repeat=3)
 
-    ans = []
+    myDict = {}
     for item in comb:
-        ans.append("4" + ''.join(list(item)))
+        equation = str("4" + ''.join(list(item)))
+        myDict[eval(equation)] = equation.replace("//", "/")
 
     # Input
-    ar = []
     num = int(input())
     for i in range(num):
-        ar.append(int(input()))
-
-    # Find solution
-    for val in ar:
-        for item in ans:
-            sol = False
-            if eval(item) == val:
-                sol = True
-                print(item + " = " + str(val))
-                break
-
-        if not sol:
+        val = int(input())
+        if val in myDict:
+            print(myDict[val] + " = " + str(val))
+        else:
             print("no solution")
