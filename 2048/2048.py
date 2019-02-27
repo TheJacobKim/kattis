@@ -1,47 +1,72 @@
 #!/bin/python3
-import numpy as np
 
-def rotate(ar, degree):
-    if degree == 0:
-        return ar
-    elif degree > 0:
-        return rotate(list(zip(*ar[::-1])), degree-90)
-    else:
-        return rotate(list(zip(*ar)[::-1]), degree+90)
+# Always go left
+class Game:
+    def __init__(self, board, dir):
+        self.tileMatrix = board
+        self.dir = dir
+        self.board_size = len(self.tileMatrix)
 
-def playGame(ar, move):
-    rotateDegree = [0, 270, 180, 90]
-    myList = list(rotate(ar, rotateDegree[move]))
+    def move(self):
+        for i in range(0, self.dir):
+            self.rotateMatrixClockwise()
+        if self.canMove():
+            self.moveTiles()
+            self.mergeTiles()
 
-    # # Move left
-    for row in myList:
-        i = 1
-        while i < 4:
-            # If 0 move
-            if row[i-1] == 0:
-                row[i-1] = row[i]
-                if i < 3:
-                    row[i] = row[i + 1]
-                    row[i+1] == 0
-                else:
-                    row[i] = 0
+        for j in range(0, (4 - self.dir) % 4):
+            self.rotateMatrixClockwise()
 
-                #continue
+        for i in range(len(self.tileMatrix)):
+            print(*self.tileMatrix[i])
 
-            # If same, double
-            if row[i] == row[i-1]:
-                row[i-1] *= 2
-                row[i] = 0
-                #continue
+    def rotateMatrixClockwise(self):
+        tm = self.tileMatrix
+        for i in range(0, int(self.board_size / 2)):
+            for k in range(i, self.board_size - i - 1):
+                temp1 = tm[i][k]
+                temp2 = tm[self.board_size - 1 - k][i]
+                temp3 = tm[self.board_size - 1 - i][self.board_size - 1 - k]
+                temp4 = tm[k][self.board_size - 1 - i]
+                tm[self.board_size - 1 - k][i] = temp1
+                tm[self.board_size - 1 - i][self.board_size - 1 - k] = temp2
+                tm[k][self.board_size - 1 - i] = temp3
+                tm[i][k] = temp4
 
-            i += 1
-    print(myList)
+    def canMove(self):
+        tm = self.tileMatrix
+        for i in range(0, self.board_size):
+            for j in range(1, self.board_size):
+                if tm[i][j - 1] == 0 and tm[i][j] > 0:
+                    return True
+                elif (tm[i][j - 1] == tm[i][j]) and tm[i][j - 1] != 0:
+                    return True
+        return False
+
+    def moveTiles(self):
+        tm = self.tileMatrix
+        for i in range(0, self.board_size):
+            for j in range(0, self.board_size - 1):
+                while tm[i][j] == 0 and sum(tm[i][j:]) > 0:
+                    for k in range(j, self.board_size - 1):
+                        tm[i][k] = tm[i][k + 1]
+                    tm[i][self.board_size - 1] = 0
+
+    def mergeTiles(self):
+        tm = self.tileMatrix
+        for i in range(0, self.board_size):
+            for k in range(0, self.board_size - 1):
+                if tm[i][k] == tm[i][k + 1] and tm[i][k] != 0:
+                    tm[i][k] = tm[i][k] * 2
+                    tm[i][k + 1] = 0
+                    self.moveTiles()
 
 if __name__ == '__main__':
     ar = []
     for i in range(4):
         ar.append(list(map(int, input().rstrip().split())))
 
-    move = int(input())
-    playGame(ar, move)
+    dir = int(input())
+    myGame = Game(ar, dir)
+    myGame.move()
 
